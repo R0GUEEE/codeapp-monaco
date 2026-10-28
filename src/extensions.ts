@@ -231,6 +231,29 @@ export async function loadExtensions(
   return result;
 }
 
+/**
+ * Reconciles the running set with the native index: registers new extensions,
+ * unloads ones that were removed or disabled. Called after install/uninstall.
+ */
+export async function syncExtensions(
+  base?: string
+): Promise<{ loaded: string[]; failed: { id: string; error: string }[] }> {
+  try {
+    const index = await fetchExtensionIndex(base);
+    const wanted = new Set(
+      index.extensions
+        .filter((entry) => entry.enabled !== false)
+        .map((entry) => entry.id)
+    );
+    for (const id of [...registered.keys()]) {
+      if (!wanted.has(id)) await unregisterExtension(id);
+    }
+  } catch (e) {
+    log(`sync: ${e instanceof Error ? e.message : e}`);
+  }
+  return loadExtensions(base);
+}
+
 /** Runs a command contributed by an extension. */
 export async function executeExtensionCommand(
   command: string,
@@ -277,6 +300,7 @@ declare global {
   interface Window {
     codeExtensions: {
       load: typeof loadExtensions;
+      sync: typeof syncExtensions;
       register: typeof registerExtensionEntry;
       unregister: typeof unregisterExtension;
       executeCommand: typeof executeExtensionCommand;
@@ -289,6 +313,7 @@ declare global {
 export function installExtensionInterface(): void {
   window.codeExtensions = {
     load: loadExtensions,
+    sync: syncExtensions,
     register: registerExtensionEntry,
     unregister: unregisterExtension,
     executeCommand: executeExtensionCommand,
