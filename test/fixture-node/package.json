@@ -1,0 +1,13 @@
+{
+  "name": "node-only-test-extension",
+  "displayName": "Codify Node-only Test Extension",
+  "description": "Fixture used to prove Node-only packages are rejected before activation.",
+  "version": "0.0.1",
+  "publisher": "codify",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": ["onStartupFinished"]
+}
