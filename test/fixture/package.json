@@ -1,0 +1,35 @@
+{
+  "name": "codify-test-extension",
+  "displayName": "Codify Test Extension",
+  "description": "Fixture extension used by the CI smoke test.",
+  "version": "0.0.1",
+  "publisher": "codify",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "browser": "./extension.js",
+  "activationEvents": ["onStartupFinished", "onCommand:codify.test.hello"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "codify.test.hello",
+        "title": "Codify: Say Hello"
+      },
+      {
+        "command": "codify.test.state",
+        "title": "Codify: Extension State"
+      }
+    ],
+    "configuration": {
+      "title": "Codify Test",
+      "properties": {
+        "codify.test.greeting": {
+          "type": "string",
+          "default": "hello",
+          "description": "Greeting used by the test extension."
+        }
+      }
+    }
+  }
+}
