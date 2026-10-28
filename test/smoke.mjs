@@ -19,6 +19,9 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const distDir = join(root, "monaco-textmate.bundle");
 const fixtureDir = join(root, "test/fixture");
 const fixtureId = "codify.codify-test-extension";
+// A Node-only package: the classifier must skip it and tell the host why.
+const nodeFixtureDir = join(root, "test/fixture-node");
+const nodeFixtureId = "codify.node-only-test-extension";
 
 const MIME = {
   ".js": "text/javascript",
@@ -66,6 +69,15 @@ const server = createServer(async (req, res) => {
             baseUrl: `http://127.0.0.1:${port}/ext/${fixtureId}`,
             files,
             manifest,
+            enabled: true,
+            source: "fixture",
+          },
+          {
+            id: nodeFixtureId,
+            path: `/extensions/${nodeFixtureId}`,
+            baseUrl: `http://127.0.0.1:${port}/ext/${nodeFixtureId}`,
+            files: nodeFiles,
+            manifest: nodeManifest,
             enabled: true,
             source: "fixture",
           },
