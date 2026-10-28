@@ -40,6 +40,13 @@ import {
 import { CodeStorage } from "./storage";
 import { toggleVimMode } from "./vim";
 import { workerConfig } from "./utilities";
+import {
+  installExtensionInterface,
+  loadExtensions,
+  executeExtensionCommand,
+  listExtensionCommands,
+} from "./extensions";
+import { productConfiguration } from "./product";
 
 declare global {
   interface Window {
@@ -136,6 +143,9 @@ export const runClient = async () => {
         ...getConfigurationServiceOverride(Uri.file("/workspace")),
         ...getExtensionServiceOverride(workerConfig),
       },
+      workspaceConfig: {
+        productConfiguration,
+      },
       debugLogging: true,
     },
   });
@@ -158,4 +168,11 @@ export const runClient = async () => {
 
   installInterface();
   applyListeners(CodeStorage.editor);
+
+  // Extension runtime: register the bridge and pull whatever the native host
+  // has installed. Both are failure tolerant – an empty index is normal.
+  installExtensionInterface();
+  (window as any).executeExtensionCommand = executeExtensionCommand;
+  (window as any).listExtensionCommands = listExtensionCommands;
+  void loadExtensions();
 };

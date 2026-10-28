@@ -5,25 +5,25 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@codingame/monaco-vscode-all-language-default-extensions": "~6.0.3",
     "@codingame/monaco-vscode-configuration-service-override": "~6.0.3",
+    "@codingame/monaco-vscode-css-language-features-default-extension": "~6.0.3",
     "@codingame/monaco-vscode-files-service-override": "~6.0.3",
     "@codingame/monaco-vscode-groovy-default-extension": "~6.0.3",
+    "@codingame/monaco-vscode-html-language-features-default-extension": "~6.0.3",
+    "@codingame/monaco-vscode-javascript-default-extension": "~6.0.3",
+    "@codingame/monaco-vscode-json-language-features-default-extension": "~6.0.3",
     "@codingame/monaco-vscode-keybindings-service-override": "~6.0.3",
     "@codingame/monaco-vscode-lifecycle-service-override": "~6.0.3",
     "@codingame/monaco-vscode-localization-service-override": "~6.0.3",
-    "@codingame/monaco-vscode-javascript-default-extension": "~6.0.3",
-    "@codingame/monaco-vscode-all-language-default-extensions": "~6.0.3",
+    "@codingame/monaco-vscode-standalone-json-language-features": "~6.0.3",
     "@codingame/monaco-vscode-standalone-languages": "~6.0.3",
     "@codingame/monaco-vscode-standalone-typescript-language-features": "~6.0.3",
-    "@codingame/monaco-vscode-standalone-json-language-features": "~6.0.3",
     "@codingame/monaco-vscode-textmate-service-override": "~6.0.3",
     "@codingame/monaco-vscode-theme-defaults-default-extension": "~6.0.3",
     "@codingame/monaco-vscode-theme-service-override": "~6.0.3",
     "@codingame/monaco-vscode-typescript-basics-default-extension": "~6.0.3",
     "@codingame/monaco-vscode-typescript-language-features-default-extension": "~6.0.3",
-    "@codingame/monaco-vscode-json-language-features-default-extension": "~6.0.3",
-    "@codingame/monaco-vscode-css-language-features-default-extension": "~6.0.3",
-    "@codingame/monaco-vscode-html-language-features-default-extension": "~6.0.3",
     "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~6.0.3",
     "monaco-editor-wrapper": "~5.3.0",
     "monaco-languageclient": "~8.6.0",
@@ -36,13 +36,14 @@
     "vscode-ws-jsonrpc": "~3.3.2"
   },
   "devDependencies": {
-    "@codingame/monaco-vscode-rollup-vsix-plugin": "~6.0.3",
     "@codingame/esbuild-import-meta-url-plugin": "~1.0.2",
+    "@codingame/monaco-vscode-rollup-vsix-plugin": "~6.0.3",
     "@types/vscode": "~1.83.0",
-    "vscode-languageserver-types": "~3.17.5",
+    "playwright": "^1.47.2",
     "typescript": "~5.5.2",
     "vite": "~5.3.1",
-    "vite-node": "~1.6.0"
+    "vite-node": "~1.6.0",
+    "vscode-languageserver-types": "~3.17.5"
   },
   "files": [
     "dist",
@@ -57,6 +58,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "dev": "vite",
-    "dev:debug": "vite --debug --force"
+    "dev:debug": "vite --debug --force",
+    "test:smoke": "node test/smoke.mjs"
   }
 }

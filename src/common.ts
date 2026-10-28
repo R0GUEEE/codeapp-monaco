@@ -3,6 +3,7 @@ import { decodeBase64 } from "./utilities";
 import { changeEditorThemeForColorScheme } from "./theme";
 import { computeDiffForURI } from "./diff";
 import { CodeStorage } from "./storage";
+import { postToNative } from "./nativeBridge";
 
 let states: { [key: string]: monaco.editor.ICodeEditorViewState } = {};
 
@@ -199,7 +200,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
       changeEditorThemeForColorScheme();
     });
 
-  (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+  postToNative({
     Event: "Editor Initialising",
   });
 
@@ -211,7 +212,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
       CodeStorage.editor.restoreViewState(states[newModel]);
     }
 
-    (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+    postToNative({
       Event: "Request Diff Update",
       URI: newModel,
     });
@@ -219,7 +220,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
     const position = instance.getPosition();
     if (!position) return;
 
-    (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+    postToNative({
       Event: "Crusor Position changed",
       Column: position.column,
       lineNumber: position.lineNumber,
@@ -227,7 +228,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
 
     const inputareaElement = document.getElementsByClassName("inputarea")[0];
     inputareaElement?.addEventListener("focus", (_event) => {
-      (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+      postToNative({
         Event: "focus",
       });
     });
@@ -236,7 +237,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
   instance.onDidChangeCursorPosition((_event) => {
     const position = instance.getPosition();
     if (!position) return;
-    (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+    postToNative({
       Event: "Crusor Position changed",
       Column: position.column,
       lineNumber: position.lineNumber,
@@ -285,7 +286,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
             lineNumber: endLineNumber,
           });
 
-    (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+    postToNative({
       Event: "Content changed",
       VersionID: versionID,
       URI: modelPath,
@@ -296,7 +297,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
   });
 
   monaco.editor.onDidChangeMarkers((_markers) => {
-    (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+    postToNative({
       Event: "Markers updated",
       Markers: monaco.editor.getModelMarkers({}),
     });
@@ -309,7 +310,7 @@ export function applyListeners(instance: monaco.editor.IStandaloneCodeEditor) {
   (
     instance.getContribution("editor.linkDetector") as any
   ).openerService._defaultExternalOpener.openExternal = (url: string) => {
-    (window as any).webkit.messageHandlers.toggleMessageHandler.postMessage({
+    postToNative({
       Event: "Open URL",
       url: url,
     });
