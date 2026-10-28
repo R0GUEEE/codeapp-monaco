@@ -1,0 +1,61 @@
+name: Bundle CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: bundle-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build editor bundle and run extension smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check extension runtime
+        run: npx tsc --noEmit -p tsconfig.json || true
+
+      - name: Build bundle
+        run: npm run build
+
+      - name: Verify bundle output
+        run: |
+          set -euxo pipefail
+          test -f monaco-textmate.bundle/index.html
+          test -n "$(find monaco-textmate.bundle/assets -name 'index-*.js' | head -1)"
+          test -n "$(find monaco-textmate.bundle/assets -name 'extensionHost.worker*' | head -1)"
+          du -sh monaco-textmate.bundle
+
+      - name: Install Chromium for smoke test
+        run: npx playwright install --with-deps chromium
+
+      - name: Run extension smoke test
+        run: npm run test:smoke
+
+      - name: Package bundle
+        run: |
+          set -euxo pipefail
+          zip -qry monaco-textmate.bundle.zip monaco-textmate.bundle
+          ls -lh monaco-textmate.bundle.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: monaco-textmate-bundle
+          path: monaco-textmate.bundle.zip
+          if-no-files-found: error
+          retention-days: 30
