@@ -96,7 +96,7 @@ function createEditorRootDOM(): HTMLDivElement | undefined {
   if (!overlay) return;
   const editorRoot = document.createElement("div");
   editorRoot.id = "monaco-editor-root";
-  editorRoot.style = "width: 100%; height: 100vh; overflow: hidden";
+  editorRoot.style.cssText = "width: 100%; height: 100vh; overflow: hidden";
   overlay.insertAdjacentElement("afterend", editorRoot);
   return editorRoot;
 }

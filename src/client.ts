@@ -16,6 +16,9 @@ import "@codingame/monaco-vscode-html-language-features-default-extension";
 import getExtensionServiceOverride from "@codingame/monaco-vscode-extensions-service-override";
 import getConfigurationServiceOverride from "@codingame/monaco-vscode-configuration-service-override";
 import { useWorkerFactory } from "monaco-editor-wrapper/workerFactory";
+// Vite resolves this to the emitted worker chunk. A bare `new URL("monaco-editor/...",
+// import.meta.url)` is wrongly resolved relative to `src/` and breaks the build.
+import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import {
   connectMonacoToLanguageServer,
   disconnectLanguageServer,
@@ -122,14 +125,7 @@ export const configureMonacoWorkers = () => {
   useWorkerFactory({
     ignoreMapping: true,
     workerLoaders: {
-      editorWorkerService: () =>
-        new Worker(
-          new URL(
-            "monaco-editor/esm/vs/editor/editor.worker.js",
-            import.meta.url
-          ),
-          { type: "module" }
-        ),
+      editorWorkerService: () => new EditorWorker(),
     },
   });
 };

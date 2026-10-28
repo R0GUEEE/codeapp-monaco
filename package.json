@@ -59,6 +59,9 @@
     "preview": "vite preview",
     "dev": "vite",
     "dev:debug": "vite --debug --force",
+    "test": "npm run test:unit",
+    "test:unit": "vite-node test/runtimeUtilities.test.ts && vite-node test/compat.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
     "test:smoke": "node test/smoke.mjs"
   }
 }
